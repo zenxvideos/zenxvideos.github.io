@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZenXVideo</title>
+
+<style>
+body {
+    margin: 0;
+    background: black;
+    color: white;
+    font-family: Arial;
+}
+
+header {
+    padding: 15px;
+    border-bottom: 2px solid #00ff88;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 30px;
+    height: 30px;
+    background: #00ff88;
+    border-radius: 50%;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 10px;
+}
+
+.card {
+    background: #111;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.preview {
+    position: relative;
+    height: 120px;
+    cursor: pointer;
+}
+
+.preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28px;
+    color: #00ff88;
+}
+
+.loading {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    font-size: 12px;
+    color: #00ff88;
+    display: none;
+}
+
+.progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: #00ff88;
+}
+
+.title {
+    padding: 8px;
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo"></div>
+    <div style="color:#00ff88;font-weight:bold;">ZenXVideo</div>
+</header>
+
+<div class="grid" id="grid"></div>
+
+<script>
+
+// ПУЛЫ
+const names = ["Зенни","ЗенДев","Зенчик","Zen","ZenDev","Zen_gd"];
+const actions = ["взял в рот","соснул","продал","продался","удалил","слил","отменил"];
+const desc = [
+    "у wmpV1",
+    "хуйца",
+    "Дредшот",
+    "за деньги",
+    "игру",
+    "нюдсы",
+    "релиз",
+];
+
+const previews = [
+    "https://i.postimg.cc/pdGpTZhC/i_(12).jpg",
+    "https://i.postimg.cc/CKPz1NBN/i_(14).jpg",
+    "https://i.postimg.cc/BvYX6gLM/i_(13).jpg",
+    "https://i.postimg.cc/HLZVx2c3/i_(15).jpg",
+    "https://i.postimg.cc/25cV6wbF/i_(16).jpg"
+];
+
+function rand(arr){
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function getTitle(){
+    return rand(names) + " " + rand(actions) + " " + rand(desc);
+}
+
+function play(preview){
+    const playBtn = preview.querySelector(".play");
+    const loading = preview.querySelector(".loading");
+    const bar = preview.querySelector(".progress");
+
+    playBtn.style.display = "none";
+    loading.style.display = "block";
+
+    let percent = 0;
+
+    const interval = setInterval(()=>{
+        percent += Math.random()*20;
+
+        if(percent >= 100){
+            percent = 100;
+            clearInterval(interval);
+            loading.innerText = "Подключение...";
+
+            setTimeout(()=>{
+                window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ","_blank");
+            },1000);
+        }
+
+        bar.style.width = percent + "%";
+
+        if(percent < 40){
+            loading.innerText = "Загрузка...";
+        } else if(percent < 80){
+            loading.innerText = "Буферизация...";
+        } else {
+            loading.innerText = "Почти готово...";
+        }
+
+    },200);
+}
+
+// СОЗДАНИЕ
+const grid = document.getElementById("grid");
+
+for(let i=0;i<10;i++){
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const preview = document.createElement("div");
+    preview.className = "preview";
+
+    const img = document.createElement("img");
+    img.src = rand(previews);
+
+    const playBtn = document.createElement("div");
+    playBtn.className = "play";
+    playBtn.innerText = "▶";
+
+    const loading = document.createElement("div");
+    loading.className = "loading";
+    loading.innerText = "Загрузка...";
+
+    const progress = document.createElement("div");
+    progress.className = "progress";
+
+    preview.appendChild(img);
+    preview.appendChild(playBtn);
+    preview.appendChild(loading);
+    preview.appendChild(progress);
+
+    preview.addEventListener("click", () => play(preview));
+
+    const title = document.createElement("div");
+    title.className = "title";
+    title.innerText = getTitle();
+
+    card.appendChild(preview);
+    card.appendChild(title);
+
+    grid.appendChild(card);
+}
+
+</script>
+
+</body>
+</html>
